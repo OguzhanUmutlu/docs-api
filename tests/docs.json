@@ -1,0 +1,54 @@
+{
+  "label": "HTML3D",
+
+  "href": "./main.md",
+  "id": "main",
+  "markdown": true,
+
+  "pages": [
+    {
+      "label": "This is a category!",
+      "description": "I am indeed a category!",
+      "id": "category",
+      "pages": [
+        {
+          "label": "This is a category!",
+          "description": "I am indeed a category!",
+          "id": "category",
+          "pages": [
+            {
+              "label": "This is a page!",
+              "description": "I am indeed a page!",
+
+              "id": "example",
+              "href": "./example.md",
+              "markdown": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "This is a category!",
+      "description": "I am indeed a category!",
+      "id": "category",
+      "pages": [
+        {
+          "label": "This is a category!",
+          "description": "I am indeed a category!",
+          "id": "category",
+          "pages": [
+            {
+              "label": "This is a page!",
+              "description": "I am indeed a page!",
+
+              "id": "example",
+              "href": "./example.md",
+              "markdown": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
