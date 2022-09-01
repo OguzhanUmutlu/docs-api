@@ -1,10 +1,12 @@
 (async () => {
     const style = document.createElement("style");
-    style.innerHTML = `.description,.navbar,.page-html{position:absolute;top:0}.navbar>.title,h1,h2,h3,h4,h5,h6{text-align:center}*{user-select:none;font-family:Arial,serif}body{--bg:#36393F;--bg-l-l-l:#7c7d81;--bg-l-l:#6c6f77;--bg-l:#595d67;--bg-d:#2a2c2f;--c:white;background-color:var(--bg);color:var(--c);overflow:hidden}.navbar{left:0;width:20%;height:100%;min-width:fit-content;background-color:var(--bg-l)}.navbar>.title{margin-top:10px;font-size:20px;cursor:pointer;transition:transform .2s ease-in-out}.navbar>.title:hover{transform:scale(1.1)}.navbar>.content{margin-top:30px}.page{padding:5px 20px;background-color:var(--bg-l-l);cursor:pointer;transition:.2s ease-in-out;white-space:nowrap}.description,pre{background-color:var(--bg-d)}.page:hover{background-color:var(--bg-l-l-l);transform:scale(1.05);translate:10px;box-shadow:10px 10px 10px rgba(0,0,0,.2)}.page-closed{margin-top:-28px}.page>svg{position:absolute;right:10px;margin-top:-3px}.description{left:0;width:fit-content;height:30px;padding:10px 10px 0;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .3s ease-in-out;z-index:1000}.description-on{opacity:.8}.page-html{left:25%;width:70%;height:100%;overflow:auto}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#888}::-webkit-scrollbar-thumb:hover{background:#555}pre{position:relative;border-radius:6px;padding:15px}.language-js{color:#7c7d81;font-family:monospace,serif;user-select:all}.language-js>.js-if{color:#ab77ae}.language-js>.js-var{color:#d07945}.language-js>.js-str{color:#8abd75}.language-js>.js-num{color:#d85348}`;
+    style.innerHTML = `.navbar>.title,h1,h2,h3,h4,h5,h6{text-align:center}.page-html,.search{position:absolute;transform:translateX(-50%)}.page,.search{white-space:nowrap}.page,.search>input{transition:.2s ease-in-out}*{--bg:#36393F;--bg-l-l-l:#7c7d81;--bg-l-l:#6c6f77;--bg-l:#595d67;--bg-d:#2a2c2f;--c:white;user-select:none;font-family:Arial,serif}body{background-color:var(--bg);color:var(--c);overflow:hidden}.navbar{position:absolute;left:0;top:0;width:20%;height:100%;min-width:fit-content;background-color:var(--bg-l)}.navbar>.title{margin-top:10px;font-size:20px;cursor:pointer;transition:transform .2s ease-in-out}.navbar>.title:hover{transform:scale(1.1)}.navbar>.content{margin-top:50px}.page{padding:5px 20px;background-color:var(--bg-l-l);cursor:pointer}.description,.search>input,pre{background-color:var(--bg-d)}.page:hover{background-color:var(--bg-l-l-l);transform:scale(1.05);translate:10px;box-shadow:10px 10px 10px rgba(0,0,0,.2)}.page-closed{margin-top:-28px}.page>svg{position:absolute;right:10px;margin-top:-3px}.description{position:absolute;left:0;top:0;width:fit-content;height:30px;padding:10px 10px 0;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .3s ease-in-out;z-index:1000}.description-on{opacity:.8}.page-html{left:-10000px;top:0;width:70%;height:100%;overflow:auto}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#888}::-webkit-scrollbar-thumb:hover{background:#555}pre{position:relative;border-radius:6px;padding:15px}.language-js{color:#7c7d81;font-family:monospace,serif;user-select:all}.language-js>.js-if{color:#ab77ae}.language-js>.js-var{color:#d07945}.language-js>.js-str{color:#8abd75}.language-js>.js-num{color:#d85348}.search{margin-top:10px;left:50%;display:flex}.search>svg{margin-top:3px;margin-right:3px}.search>input{outline:0;border:none;color:#fff;padding:5px;border-radius:3px;width:55px}`;
     if (document.head) document.head.appendChild(style);
     /*** @type {{label: string, _open?: boolean, id?: string, html?: string, markdown?: boolean, pages: ({type: "page", label: string} | {type: "category", _open?: boolean, label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: Array})[]})[]})[]})[]}} */
     const DOCS = await (await fetch("./docs.json")).json();
-    //todo: animations on page navbar, changing page transition like a transition that translates pages from left to right and configurable
+    //todo: changing page transition like a transition that translates pages from left to right and configurable
+    //todo: search bar - finish it.
+    //todo: light mode
     const ORIGINAL_PAD = 30;
     const STEP_PAD = 15;
     const setURL = url => window.history.pushState({}, null, url);
@@ -164,7 +166,7 @@
         desc().style.left = ev.clientX + 15 + "px";
         desc().style.top = ev.clientY - 7 + "px";
     });
-    document.body.innerHTML = `<div class="navbar"><div class="title">${DOCS.label}</div><div class="content"></div></div><div class="page-html"></div><div class="description"></div>`;
+    document.body.innerHTML = `<div class="navbar"><div class="title">${DOCS.label}</div><div class="search"><svg width="17" height="18"><circle cx="10" cy="7" r="5" stroke-width="3" stroke="var(--bg)" fill-opacity="0"></circle><path d=""></path><line x1="5" x2="0" y1="11" y2="16" stroke="var(--bg)" stroke-width="3"></line></svg><input placeholder="Search..."></div><div class="content"></div></div><div class="page-html"></div><div class="description"></div>`;
     if (!document.head) document.body.appendChild(style);
     document.querySelector(".navbar > .title").addEventListener("click", () => {
         if (DOCS.id) setPage(DOCS.id);
@@ -176,18 +178,33 @@
     await new Promise(r => markedScript.addEventListener("load", r));
     const reload = () => {
         const content = document.querySelector(".navbar > .content");
-        content.innerHTML = "";
         /*** @type {HTMLDivElement[]} */
         const nodes = getAllPages().filter(i => i !== DOCS).map(i => parsePage(i));
-        nodes.forEach(e => content.appendChild(e));
+        nodes.forEach(e => !e.parentNode && content.appendChild(e));
     };
     reload();
     reload();
-    window.rel = reload;
+    setInterval(() => {
+        inp.style.width = searchBar.hover || document.activeElement === inp || inp.value ? "150px" : "";
+        document.querySelector(".page-html").style.left = "calc(40% + " + document.querySelector(".navbar").getBoundingClientRect().width + "px)";
+    });
     const queryPage = new URLSearchParams(location.href).get("page") || DOCS.id;
     const page = getAllPages().find(i => i.id === queryPage);
     window.DOCS = DOCS;
     if (page) setPageHTML(page);
     addEventListener("contextmenu", ev => ev.preventDefault());
-    addEventListener("keydown", ev => ev.key === "F12" && ev.preventDefault());
+    let keys = {};
+    const combo = (...keys_) => keys_.every(i => typeof i === "string" ? keys[i] || keys[i.toLowerCase()] : i.some(i => keys[i] || keys[i.toLowerCase()]));
+    addEventListener("keydown", ev => {
+        keys[ev.key] = true;
+        if (ev.key === "F12" || combo("Control", "Shift", ["C", "J", "I"])) ev.preventDefault();
+    });
+    addEventListener("keyup", ev => delete keys[ev.key]);
+    addEventListener("blur", () => keys = {});
+    addEventListener("focus", () => keys = {});
+    const searchSub = document.querySelector(".search");
+    const inp = searchSub.querySelector(".search > input");
+    const searchBar = {hover: false};
+    searchSub.addEventListener("mouseover", () => searchBar.hover = true);
+    searchSub.addEventListener("mouseleave", () => searchBar.hover = false);
 })();

@@ -1,5 +1,5 @@
 {
-  "label": "HTML3D",
+  "label": "Docs API",
 
   "href": "./main.md",
   "id": "main",
@@ -9,12 +9,10 @@
     {
       "label": "This is a category!",
       "description": "I am indeed a category!",
-      "id": "category",
       "pages": [
         {
           "label": "This is a category!",
           "description": "I am indeed a category!",
-          "id": "category",
           "pages": [
             {
               "label": "This is a page!",
@@ -31,12 +29,10 @@
     {
       "label": "This is a category!",
       "description": "I am indeed a category!",
-      "id": "category",
       "pages": [
         {
           "label": "This is a category!",
           "description": "I am indeed a category!",
-          "id": "category",
           "pages": [
             {
               "label": "This is a page!",
