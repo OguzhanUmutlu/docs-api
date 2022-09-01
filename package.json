@@ -1,0 +1,31 @@
+{
+  "name": "json-documentation",
+  "version": "1.0.1",
+  "description": "An easy to use documentation API",
+  "main": "docs.min.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OguzhanUmutlu/docs-api.git"
+  },
+  "keywords": [
+    "docs",
+    "api",
+    "documentation",
+    "doc",
+    "js",
+    "markdown",
+    "md",
+    "json"
+  ],
+  "author": "OguzhanUmutlu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OguzhanUmutlu/docs-api/issues"
+  },
+  "homepage": "https://github.com/OguzhanUmutlu/docs-api#readme"
+}
