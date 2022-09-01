@@ -2,6 +2,10 @@
 
 An easy-to-use documentation API
 
+## Example
+
+[Github Page Example](https://oguzhanumutlu.github.io/docs-api/tests/)
+
 ## Importing
 
 ```html
