@@ -1,10 +1,18 @@
 (async () => {
     await new Promise(r => addEventListener("load", r));
     const style = document.createElement("style");
-    style.innerHTML = `.navbar>.title,h1,h2,h3,h4,h5,h6{text-align:center}.page-html,.search{position:absolute;transform:translateX(-50%)}.page,.search{white-space:nowrap}.page,.search>input{transition:.2s ease-in-out}*{--bg:#36393F;--bg-l-l-l:#7c7d81;--bg-l-l:#6c6f77;--bg-l:#595d67;--bg-d:#2a2c2f;--c:white;user-select:none;font-family:Arial,serif}body{background-color:var(--bg);color:var(--c);overflow:hidden}.navbar{position:absolute;left:0;top:0;width:20%;height:100%;min-width:fit-content;background-color:var(--bg-l)}.navbar>.title{margin-top:10px;font-size:20px;cursor:pointer;transition:transform .2s ease-in-out}.navbar>.title:hover{transform:scale(1.1)}.navbar>.content{margin-top:50px}.page{padding:5px 20px;background-color:var(--bg-l-l);cursor:pointer}.description,.search>input,pre{background-color:var(--bg-d)}.page:hover{background-color:var(--bg-l-l-l);transform:scale(1.05);translate:10px;box-shadow:10px 10px 10px rgba(0,0,0,.2)}.page-closed{margin-top:-28px}.page>svg{position:absolute;right:10px;margin-top:-3px}.description{position:absolute;left:0;top:0;width:fit-content;height:30px;padding:10px 10px 0;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .3s ease-in-out;z-index:1000}.description-on{opacity:.8}.page-html{left:-10000px;top:0;width:70%;height:100%;overflow:auto}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#888}::-webkit-scrollbar-thumb:hover{background:#555}pre{position:relative;border-radius:6px;padding:15px}.language-js{color:#7c7d81;font-family:monospace,serif;user-select:all}.language-js>.js-if{color:#ab77ae}.language-js>.js-var{color:#d07945}.language-js>.js-str{color:#8abd75}.language-js>.js-num{color:#d85348}.search{margin-top:10px;left:50%;display:flex}.search>svg{margin-top:3px;margin-right:3px}.search>input{outline:0;border:none;color:#fff;padding:5px;border-radius:3px;width:55px}`;
+    style.innerHTML = `.navbar>.title,h1,h2,h3,h4,h5,h6{text-align:center}.page-html,.search{position:absolute;transform:translateX(-50%)}.page,.search{white-space:nowrap}.page,.search>input{transition:.2s ease-in-out}.btn,.navbar>.title,.page{cursor:pointer}.btn,.search{display:flex}:root{--bg:#36393F;--bg-l-l-l:#7c7d81;--bg-l-l:#6c6f77;--bg-l:#595d67;--bg-d:#2a2c2f;--c:white}*{user-select:none;font-family:Arial,serif}body{background-color:var(--bg);color:var(--c);overflow:hidden}.navbar{position:absolute;left:0;top:0;width:20%;height:100%;min-width:fit-content;background-color:var(--bg-l)}.navbar>.title{margin-top:10px;font-size:20px;transition:transform .2s ease-in-out}.navbar>.title:hover{transform:scale(1.1)}.navbar>.content{margin-top:50px}.page{padding:5px 20px;background-color:var(--bg-l-l)}.description,.search>input,pre{background-color:var(--bg-d)}.page:hover{background-color:var(--bg-l-l-l);transform:scale(1.05);translate:10px;box-shadow:10px 10px 10px rgba(0,0,0,.2)}.page-closed{margin-top:-28px}.page>svg{position:absolute;right:10px;margin-top:-3px}.description{position:absolute;left:0;top:0;width:fit-content;height:30px;padding:10px 10px 0;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .3s ease-in-out;z-index:1000}.description-on{opacity:.8}.page-html{left:-10000px;top:0;width:70%;height:100%;overflow:auto}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:#888}::-webkit-scrollbar-thumb:hover{background:#555}pre{position:relative;border-radius:6px;padding:15px}.language-js{color:#7c7d81;font-family:monospace,serif;user-select:all}.language-js>.js-if{color:#ab77ae}.language-js>.js-var{color:#d07945}.language-js>.js-str{color:#8abd75}.language-js>.js-num{color:#d85348}.search{margin-top:10px;left:50%}.search>svg{margin-top:3px;margin-right:3px}.search>input{outline:0;border:none;color:#fff;padding:5px;border-radius:3px;width:55px}.btn{background-color:var(--bg-l);border-radius:5px;padding:10px;box-shadow:0 5px #000;transition:transform .2s,background-color .2s,box-shadow .2s}.btn:hover{transform:translateY(5px);background-color:var(--bg-l-l);box-shadow:none}`;
     if (document.head) document.head.appendChild(style);
     /*** @type {{label: string, _open?: boolean, id?: string, html?: string, markdown?: boolean, pages: ({type: "page", label: string} | {type: "category", _open?: boolean, label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: ({type: "page", label: string} | {type: "category", label: string, pages: Array})[]})[]})[]})[]}} */
-    const DOCS = await (await fetch("./docs.json")).json();
+    const DOCS = await new Promise(async r => {
+        try {
+            r(await (await fetch("./docs.json")).json());
+        } catch (e) {
+            alert("Couldn't load docs.json");
+            r();
+        }
+    });
+    if (typeof DOCS !== "object") return;
     //todo: changing page transition like a transition that translates pages from left to right and configurable
     //todo: search bar - finish it.
     //todo: light mode
@@ -39,7 +47,31 @@
     const setPageHTML = page => {
         if (page.html) {
             const pageHtml = document.querySelector(".page-html");
-            pageHtml.innerHTML = page.markdown ? marked.parse(page.html) : page.html;
+            pageHtml.innerHTML = page.markdown && typeof marked !== "undefined" ? marked.parse(page.html) : page.html;
+            const all = getAllPages();
+            const next = all.slice(all.indexOf(page) + 1).find(i => i.href || i.html);
+            const prev = all.slice(0, all.indexOf(page)).reverse().find(i => i.href || i.html);
+            const btnL = document.createElement("div");//todo: page arrows
+            btnL.style.display = "flex";
+            btnL.style.marginTop = "30px";
+            pageHtml.appendChild(btnL);
+            const btn = (type, page, style) => {
+                const div = document.createElement("div");
+                div.classList.add("btn");
+                style.forEach(i => div.style[i[0]] = i[1]);
+                div.textContent = page.label;
+                div.innerHTML = [
+                    "<svg width='16' height='16'><path d='M8 3 L3 8 L8 13 M14 3 L9 8 L14 13' fill-opacity='0' stroke-width='3' stroke='var(--bg-d)'></svg>&nbsp;" + div.textContent,
+                    div.textContent + "&nbsp;<svg width='16' height='16'><path d='M3 3 L8 8 L3 13 M9 3 L14 8 L9 13' fill-opacity='0' stroke-width='3' stroke='var(--bg-d)'></svg>"
+                ][type];
+                div.addEventListener("click", () => {
+                    if (page.id) setPage(page.id);
+                    setPageHTML(page);
+                });
+                btnL.appendChild(div);
+            };
+            if (prev) btn(0, prev, [["marginLeft", "20px"]]);
+            if (next) btn(1, next, [["position", "absolute"], ["right", "10px"]]);
             pageHtml.querySelectorAll("code").forEach(c => {
                 const _lang = Array.from(c.classList).find(i => i.startsWith("language-"));
                 if (!_lang) return;
@@ -111,10 +143,22 @@
                         div.textContent = i.str;
                         c.appendChild(div);
                     });
+                } else if (lang === "html") {
+                } else if (lang === "css") {
+                } else if (lang === "java") {
+                } else if (lang === "cpp") {
+                } else if (lang === "c") {
+                } else if (lang === "shell") {
+                } else if (lang === "cmd") {
                 }
+                //todo: more languages, if you want to help me you can create a pull request about it, 'c' is the content div which you can put html in, good luck!
             });
         }
     };
+    const root = document.querySelector(":root");
+    const _root_cmp = getComputedStyle(root);
+    const setRootProperty = (a, b) => root.style.setProperty(a, b);
+    const getRootProperty = a => _root_cmp.getPropertyValue(a);
     let _id = 0;
     /**
      * @param {Object} page
@@ -149,6 +193,7 @@
             }
             div.style.position = "relative";
             div.style.zIndex = 1000 - page._sub + "";
+            div.style.filter = "brightness(" + (0.7 + page._sub * .1) + ")";
             page._div = div;
             page._parent = parent;
         } else {
