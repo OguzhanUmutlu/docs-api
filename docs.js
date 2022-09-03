@@ -22,6 +22,7 @@
     const setPage = page => {
         const query = new URLSearchParams(location.href);
         query.set("page", page);
+        if (!page) query.delete("page");
         setURL(Array.from(query).map(i => `${encodeURI(i[0])}=${encodeURI(i[1])}`).join("&"));
     };
     const loadPage = async page => {
@@ -46,6 +47,7 @@
     DOCS._open = true;
     const setPageHTML = page => {
         if (page.html) {
+            if (page === DOCS) setPage("");
             const pageHtml = document.querySelector(".page-html");
             pageHtml.innerHTML = page.markdown && typeof marked !== "undefined" ? marked.parse(page.html) : page.html;
             const all = getAllPages();
@@ -215,7 +217,6 @@
     document.body.innerHTML = `<div class="navbar"><div class="title">${DOCS.label}</div><div class="search"><svg width="17" height="18"><circle cx="10" cy="7" r="5" stroke-width="3" stroke="var(--bg)" fill-opacity="0"></circle><path d=""></path><line x1="5" x2="0" y1="11" y2="16" stroke="var(--bg)" stroke-width="3"></line></svg><input placeholder="Search..."></div><div class="content"></div></div><div class="page-html"></div><div class="description"></div>`;
     if (!document.head) document.body.appendChild(style);
     document.querySelector(".navbar > .title").addEventListener("click", () => {
-        if (DOCS.id) setPage(DOCS.id);
         if (DOCS.html) setPageHTML(DOCS);
     });
     const markedScript = document.createElement("script");

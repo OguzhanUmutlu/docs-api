@@ -83,7 +83,6 @@ const DocsJson = {
     label: string,
     href: string | undefined,
     html: string | undefined,
-    id: string | undefined,
     markdown: boolean | undefined,
     pages: DocsPage
 };
